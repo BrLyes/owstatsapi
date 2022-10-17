@@ -2,23 +2,28 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Stat;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StatCharRequest extends FormRequest
+class StatSumRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
      */
-
     public function rules()
     {
         return [
             "name" => [
                 "required",
                 "exists:characters,name"
-            ]
+            ],
+            "stat" => [
+                "sometimes",
+                Rule::in(Stat::STATS)
+            ],
         ];
     }
 }

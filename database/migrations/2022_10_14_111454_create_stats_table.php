@@ -21,7 +21,10 @@ return new class extends Migration
             $table->integer("damage")->nullable(false)->default(0);
             $table->float("accuracy")->nullable(false)->default(0.00);
             $table->foreignId("character_id")->constrained();
-            $table->timestamps();
+            $table->timestamp('match_date')->nullable(false);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
+            $table->softDeletes();
         });
     }
 
