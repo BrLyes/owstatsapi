@@ -144,19 +144,25 @@ test("it_returns_200_if_payload_is_valid", function () {
     $response->assertStatus(200);
 });
 
-//TODO: Randomise after and before and filter the $stats collection
 test("it_returns_200_with_data_ordered_by_match_date_if_payload_is_valid", function () {
     $character = Character::factory()
                           ->has(Stat::factory()->count(rand(2, 10)))
                           ->create();
-    $stat = Stat::STATS[rand(0, count(Stat::STATS)-1)]; //pick a random stat
-    $stats = $character->stats->map->only([$stat,"match_date"])->sortBy("match_date")->values()->toArray();
+    $stat      = Stat::STATS[rand(0, count(Stat::STATS) - 1)]; //pick a random stat
+    $randomMin = rand(0, 99999);
+    $after     = Carbon::now()->subMinutes($randomMin);
+    $before    = $after->addMinutes(99999);
+    $stats     = $character->stats->map->only([$stat, "match_date"])
+                                       ->sortBy("match_date")
+                                       ->whereBetween("match_date", $after, $before)
+                                       ->values()
+                                       ->toArray();
 
     $arrPayload = [
         "name"   => $character->name,
         "stat"   => $stat,
-        "after"  => "1990-01-01",
-        "before" => Carbon::now()
+        "after"  => $after,
+        "before" => $before
     ];
 
     $response = $this::withHeaders(

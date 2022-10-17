@@ -102,7 +102,7 @@ test("it_returns_200_with_avg_of_all_stats_if_name_is_provided", function () {
     $stats = $character->stats;
     $assertedResponse = [];
     foreach (Stat::STATS as $stat) {
-        $assertedResponse[$stat] = $stats->pluck($stat)->avg();
+        $assertedResponse[$stat] = number_format($stats->pluck($stat)->avg(),2);
     }
 
     $arrPayload = [
@@ -126,7 +126,7 @@ test("it_returns_200_with_avg_of_stat_if_name_and_stat_are_provided", function (
                           ->create();
 
     $stat = Stat::STATS[rand(0, count(Stat::STATS)-1)]; //pick a random stat
-    $assertedResponse = $character->stats->pluck($stat)->avg();
+    $assertedResponse = number_format($character->stats->pluck($stat)->avg(),2);
 
     $arrPayload = [
         "name"   => $character->name,

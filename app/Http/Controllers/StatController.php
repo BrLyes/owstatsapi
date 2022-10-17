@@ -36,7 +36,7 @@ class StatController extends Controller
         $data  = [];
         $stats = Character::where("name", $request->input("name"))->first()->stats;
         foreach (Stat::STATS as $stat) {
-            $data[$stat] = $stats->pluck($stat)->average();
+            $data[$stat] = number_format($stats->pluck($stat)->average(),2);
         }
         return ($request->input("stat")) ?
             response()->json($data[$request->input("stat")]) :
