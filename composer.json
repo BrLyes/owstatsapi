@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.7"
     },
     "require-dev": {
+        "arielmejiadev/json-api-auth": "^1.1",
         "barryvdh/laravel-ide-helper": "^2.12",
         "brianium/paratest": "^6.6",
         "fakerphp/faker": "^1.9.1",
