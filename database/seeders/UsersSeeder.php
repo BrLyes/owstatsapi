@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Character;
-use App\Models\Game;
 
-class CharactersSeeder extends Seeder
+class UsersSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,12 +15,6 @@ class CharactersSeeder extends Seeder
      */
     public function run()
     {
-        //Characters
-        $ashe = Character::firstOrCreate(
-            [
-                "name" => "Ashe",
-            ]
-        );
-
+        User::factory()->count(rand(3,5))->create();
     }
 }

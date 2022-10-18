@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Stat;
+use App\Models\Game;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,7 +22,7 @@ class StatSumRequest extends FormRequest
             ],
             "stat" => [
                 "sometimes",
-                Rule::in(Stat::STATS)
+                Rule::in(Game::STATS)
             ],
         ];
     }

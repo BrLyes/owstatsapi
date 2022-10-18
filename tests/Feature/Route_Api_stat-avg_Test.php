@@ -1,145 +1,119 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\EmptyTablesSeeder;
 use App\Models\Character;
-use App\Models\Stat;
-use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Game;
 
-test("it_returns_422_with_errors_if_no_payload_is_present", function () {
+beforeEach(function () {
+    $this->seed(EmptyTablesSeeder::class);
+    $this->seed(DatabaseSeeder::class);
+});
+
+test("it_returns_401_user_is_not_authenticated", function () {
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->post(route("api-stat-avg"));
+    $response->assertStatus(401);
+});
+
+test("it_returns_422_with_errors_if_name_is_missing", function () {
+    $user      = User::inRandomOrder()->first();
     $arrErrors = [
         "errors" => [
-            "name"   => ["The name field is required."],
+            "name" => ["The name field is required."],
         ]
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->post(route("api-stat-avg"));
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->post(route("api-stat-avg"));
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
-test("it_returns_422_with_errors_if_name_is_not_character_table_name_column", function () {
-    $character = Character::factory()
-                          ->create();
-
-    $arrErrors = [
+test("it_returns_422_with_errors_if_name_is_invalid", function () {
+    $user       = User::inRandomOrder()->first();
+    $arrErrors  = [
         "errors" => [
             "name" => ["The selected name is invalid."],
         ]
     ];
-
     $arrPayload = [
-        "name"   => Str::random(16),
-        "stat"   => "accuracy",
+        "name" => "invalid",
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-avg"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-avg"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
-test("it_returns_422_with_errors_if_stat_is_not_in_Stat::STATS", function () {
-    $character = Character::factory()
-                          ->create();
-    $arrErrors = [
+test("it_returns_422_with_errors_if_stat_is_invalid", function () {
+    $user       = User::inRandomOrder()->first();
+    $arrErrors  = [
         "errors" => [
             "stat" => ["The selected stat is invalid."],
         ]
     ];
-
     $arrPayload = [
-        "name"   => $character->name,
-        "stat"   => "invalid",
+        "stat" => "invalid",
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-avg"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-avg"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
-test("it_returns_200_if_payload_is_valid", function () {
-    $character = Character::factory()
-                          ->create();
-    $stat = Stat::STATS[rand(0, count(Stat::STATS)-1)]; //pick a random stat
+test("it_returns_200_with_user_sum_of_all_stats_for_the_selected_character_if_name_is_valid", function () {
+    //Picking random entries
+    $user      = User::inRandomOrder()->first();
+    $character = Character::inRandomOrder()->first();
+    $stats     = Game::ofCharacter($character->id)
+                     ->ofUser($user->id)
+                     ->get();
+    $assert    = [];
 
-    $arrPayload = [
-        "name"   => $character->name,
-        "stat"   => $stat,
-    ];
-
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-avg"), $arrPayload);
-
-    $response->assertStatus(200);
-});
-
-test("it_returns_200_with_avg_of_all_stats_if_name_is_provided", function () {
-    $character = Character::factory()
-                          ->has(Stat::factory()->count(rand(2, 10)))
-                          ->create();
-
-    $stats = $character->stats;
-    $assertedResponse = [];
-    foreach (Stat::STATS as $stat) {
-        $assertedResponse[$stat] = number_format($stats->pluck($stat)->avg(),2);
+    foreach (Game::STATS as $stat) {
+        $assert[$stat] = number_format($stats->pluck($stat)->average(), 2);
     }
 
-    $arrPayload = [
-        "name"   => $character->name,
-    ];
-
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-avg"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-avg"), [
+                         "name" => $character->name
+                     ]);
 
     $response->assertStatus(200)
-             ->assertJson($assertedResponse);
+             ->assertJson($assert);
 });
 
-test("it_returns_200_with_avg_of_stat_if_name_and_stat_are_provided", function () {
-    $character = Character::factory()
-                          ->has(Stat::factory()->count(rand(2, 10)))
-                          ->create();
+test("it_returns_200_with_user_selected_stat_for_the_selected_character_if_name_is_valid", function () {
+    //Picking random entries
+    $user      = User::inRandomOrder()->first();
+    $character = Character::inRandomOrder()->first();
+    $stat      = Game::STATS[rand(0, count(Game::STATS) - 1)]; //pick a random stat
 
-    $stat = Stat::STATS[rand(0, count(Stat::STATS)-1)]; //pick a random stat
-    $assertedResponse = number_format($character->stats->pluck($stat)->avg(),2);
+    //Setting the assert
+    $assert = Game::ofCharacter($character->id)
+                                ->ofUser($user->id)
+                                ->get()
+                                ->pluck($stat)
+                                ->average();
 
-    $arrPayload = [
-        "name"   => $character->name,
-        "stat"   => $stat,
-    ];
-
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-avg"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-avg"), [
+                         "stat" => $stat,
+                         "name" => $character->name
+                     ]);
 
     $response->assertStatus(200)
-             ->assertSee($assertedResponse);
+             ->assertSee(number_format($assert,2));
 });

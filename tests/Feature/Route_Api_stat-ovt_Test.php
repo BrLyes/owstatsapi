@@ -1,11 +1,25 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\Character;
-use App\Models\Stat;
 use Carbon\Carbon;
+use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\EmptyTablesSeeder;
+use App\Models\Character;
+use App\Models\User;
+use App\Models\Game;
+
+beforeEach(function () {
+    $this->seed(EmptyTablesSeeder::class);
+    $this->seed(DatabaseSeeder::class);
+});
+
+test("it_returns_401_user_is_not_authenticated", function () {
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->post(route("api-stat-avg"));
+    $response->assertStatus(401);
+});
 
 test("it_returns_422_with_errors_if_no_payload_is_present", function () {
+    $user      = User::inRandomOrder()->first();
     $arrErrors = [
         "errors" => [
             "name"   => ["The name field is required."],
@@ -15,18 +29,16 @@ test("it_returns_422_with_errors_if_no_payload_is_present", function () {
         ]
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->post(route("api-stat-ovt"));
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->post(route("api-stat-ovt"));
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
 test("it_returns_422_with_errors_if_name_is_not_character_table_name_column", function () {
+    $user      = User::inRandomOrder()->first();
     $arrErrors = [
         "errors" => [
             "name" => ["The selected name is invalid."],
@@ -40,18 +52,16 @@ test("it_returns_422_with_errors_if_name_is_not_character_table_name_column", fu
         "before" => "2022-12-13"
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-ovt"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
 test("it_returns_422_with_errors_if_stat_is_not_in_Stat::STATS", function () {
+    $user      = User::inRandomOrder()->first();
     $arrErrors = [
         "errors" => [
             "stat" => ["The selected stat is invalid."],
@@ -65,18 +75,16 @@ test("it_returns_422_with_errors_if_stat_is_not_in_Stat::STATS", function () {
         "before" => "2022-12-13"
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-ovt"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
 test("it_returns_422_with_errors_if_after_is_not_a_date", function () {
+    $user      = User::inRandomOrder()->first();
     $arrErrors = [
         "errors" => [
             "after" => ["The after is not a valid date."],
@@ -90,18 +98,16 @@ test("it_returns_422_with_errors_if_after_is_not_a_date", function () {
         "before" => "2022-12-13"
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-ovt"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
 test("it_returns_422_with_errors_if_before_is_not_a_date", function () {
+    $user      = User::inRandomOrder()->first();
     $arrErrors = [
         "errors" => [
             "before" => ["The before is not a valid date."],
@@ -115,18 +121,16 @@ test("it_returns_422_with_errors_if_before_is_not_a_date", function () {
         "before" => "invalid"
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-ovt"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
 });
 
 test("it_returns_200_if_payload_is_valid", function () {
+    $user       = User::inRandomOrder()->first();
     $arrPayload = [
         "name"   => "ashe",
         "stat"   => "accuracy",
@@ -134,29 +138,27 @@ test("it_returns_200_if_payload_is_valid", function () {
         "before" => "2022-12-12"
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-ovt"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-ovt"), $arrPayload);
 
     $response->assertStatus(200);
 });
 
 test("it_returns_200_with_data_ordered_by_match_date_if_payload_is_valid", function () {
-    $character = Character::factory()
-                          ->has(Stat::factory()->count(rand(2, 10)))
-                          ->create();
-    $stat      = Stat::STATS[rand(0, count(Stat::STATS) - 1)]; //pick a random stat
+    $user      = User::inRandomOrder()->first();
+    $character = Character::inRandomOrder()->first();
+    $stat      = Game::STATS[rand(0, count(Game::STATS) - 1)]; //pick a random stat
     $randomMin = rand(0, 99999);
     $after     = Carbon::now()->subMinutes($randomMin);
     $before    = $after->addMinutes(99999);
-    $stats     = $character->stats->map->only([$stat, "match_date"])
-                                       ->sortBy("match_date")
-                                       ->whereBetween("match_date", $after, $before)
-                                       ->values()
-                                       ->toArray();
+    $stats     = Game::ofUser($user->id)
+                     ->ofCharacter($character->id)
+                     ->get()->map->only([$stat, "match_date"])
+                                 ->sortBy("match_date")
+                                 ->whereBetween("match_date", $after, $before)
+                                 ->values()
+                                 ->toArray();
 
     $arrPayload = [
         "name"   => $character->name,
@@ -165,12 +167,9 @@ test("it_returns_200_with_data_ordered_by_match_date_if_payload_is_valid", funct
         "before" => $before
     ];
 
-    $response = $this::withHeaders(
-        [
-            "Accept"       => "application/json",
-            "Content-Type" => "application/json"
-        ]
-    )->postJson(route("api-stat-ovt"), $arrPayload);
+    $response = $this::withHeaders(DEFAULTHEADERS)
+                     ->actingAs($user)
+                     ->postJson(route("api-stat-ovt"), $arrPayload);
 
     $response->assertStatus(200)
              ->assertJson($stats);

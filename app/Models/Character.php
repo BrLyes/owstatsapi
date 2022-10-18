@@ -9,7 +9,7 @@ class Character extends Model
 {
     use HasFactory;
 
-    public function stats(){
-        return $this->hasMany(Stat::class);
+    public function games(){
+        return $this->hasMany(Game::class);
     }
 }
