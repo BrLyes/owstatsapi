@@ -9,6 +9,17 @@ class Game extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        "kill",
+        "death",
+        "assist",
+        "damage",
+        "accuracy",
+        "character_id",
+        "user_id",
+        "match_date",
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

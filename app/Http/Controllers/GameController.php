@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GameStoreRequest;
 use App\Http\Requests\StatAverageRequest;
 use App\Http\Requests\StatOvertimeRequest;
 use App\Http\Requests\StatCharRequest;
 use App\Http\Requests\StatSumRequest;
 use App\Models\Character;
 use App\Models\Game;
+use Carbon\Carbon;
 
 class GameController extends Controller
 {
@@ -61,5 +63,17 @@ class GameController extends Controller
             response()->json($response[$request->input("stat")])
             :
             response()->json($response);
+    }
+
+    public function store(GameStoreRequest $request) {
+        return response()->json(Game::create(
+            array_merge(
+                [
+                    "user_id" => $request->user()->id,
+                    "match_date" => Carbon::now()
+                ],
+                $request->all()
+            )
+        ));
     }
 }
