@@ -9,7 +9,7 @@ use App\Http\Requests\StatSumRequest;
 use App\Models\Character;
 use App\Models\Game;
 
-class MatchController extends Controller
+class GameController extends Controller
 {
     public function getChars() {
         return response()->json(Character::all());
