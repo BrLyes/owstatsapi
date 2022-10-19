@@ -16,5 +16,6 @@ class UsersSeeder extends Seeder
     public function run()
     {
         User::factory()->count(rand(3,5))->create();
+        User::factory(["email" => "test@test.test"])->create(); //for testing purposes
     }
 }
