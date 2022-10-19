@@ -14,7 +14,7 @@ use App\Http\Controllers\GameController;
 |
 */
 
-
+//TODO: rename routes and replace - with . 
 Route::get('/chars', [GameController::class, 'getChars']);
 
 Route::middleware("auth:sanctum")->group(function(){
