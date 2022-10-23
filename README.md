@@ -2,7 +2,7 @@
 
 A simple API to store players stats in overwatch 2 (the game) powered by [laravel](https://laravel.com)
 
-Example of usage is in owstats
+Stage version hosted on : https://api.stage.owstats.app/
 
 ##How it works
 
