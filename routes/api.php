@@ -19,7 +19,7 @@ Route::get('/chars', [GameController::class, 'getChars']);
 
 Route::middleware("auth:sanctum")->group(function(){
     Route::post("/games", [GameController::class, "store"])->name("game.store");
-    Route::post('/stat', [GameController::class, 'statsForChar'])->name("api-stat-name");
+    Route::post('/stat-all', [GameController::class, 'statsForChar'])->name("api.stat.all");
     Route::post('/stat-ovt', [GameController::class, 'StatOverTime'])->name("api-stat-ovt");
     Route::post('/stat-avg', [GameController::class, 'StatAverage'])->name("api-stat-avg");
     Route::post('/stat-sum', [GameController::class, 'StatSum'])->name("api-stat-sum");
