@@ -16,9 +16,9 @@ The user(player) first needs to create an account and then sends data to the gam
 * accuracy
 
 ###Stat aggregation it can return
-* Stat overtime: selected stat between two dates (route("api-stat-ovt"));
-* Stat sum: sum of one or multiple stats (route("api-stat-sum"))
-* Stat average: average of one or multiple stats (route("api-stat-sum"))
+* Stat overtime: selected stat between two dates (route("api.stat.ovt"));
+* Stat sum: sum of one or multiple stats (route("api.stat.sum"))
+* Stat average: average of one or multiple stats (route("api.stat.sum"))
 * Stat for character: ALl stats for a specific character (route("api-stat-name"))
 
 

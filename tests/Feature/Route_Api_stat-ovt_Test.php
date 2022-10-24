@@ -14,7 +14,7 @@ beforeEach(function () {
 
 test("it_returns_401_user_is_not_authenticated", function () {
     $response = $this::withHeaders(DEFAULTHEADERS)
-                     ->post(route("api-stat-avg"));
+                     ->post(route("api.stat.avg"));
     $response->assertStatus(401);
 });
 
@@ -31,7 +31,7 @@ test("it_returns_422_with_errors_if_no_payload_is_present", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->post(route("api-stat-ovt"));
+                     ->post(route("api.stat.ovt"));
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -54,7 +54,7 @@ test("it_returns_422_with_errors_if_name_is_not_character_table_name_column", fu
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-ovt"), $arrPayload);
+                     ->postJson(route("api.stat.ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -77,7 +77,7 @@ test("it_returns_422_with_errors_if_stat_is_not_in_Stat::STATS", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-ovt"), $arrPayload);
+                     ->postJson(route("api.stat.ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -100,7 +100,7 @@ test("it_returns_422_with_errors_if_after_is_not_a_date", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-ovt"), $arrPayload);
+                     ->postJson(route("api.stat.ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -123,7 +123,7 @@ test("it_returns_422_with_errors_if_before_is_not_a_date", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-ovt"), $arrPayload);
+                     ->postJson(route("api.stat.ovt"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -140,7 +140,7 @@ test("it_returns_200_if_payload_is_valid", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-ovt"), $arrPayload);
+                     ->postJson(route("api.stat.ovt"), $arrPayload);
 
     $response->assertStatus(200);
 });
@@ -169,7 +169,7 @@ test("it_returns_200_with_data_ordered_by_match_date_if_payload_is_valid", funct
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-ovt"), $arrPayload);
+                     ->postJson(route("api.stat.ovt"), $arrPayload);
 
     $response->assertStatus(200)
              ->assertJson($stats);

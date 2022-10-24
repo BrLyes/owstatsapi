@@ -13,7 +13,7 @@ beforeEach(function () {
 
 test("it_returns_401_user_is_not_authenticated", function () {
     $response = $this::withHeaders(DEFAULTHEADERS)
-                     ->post(route("api-stat-avg"));
+                     ->post(route("api.stat.avg"));
     $response->assertStatus(401);
 });
 
@@ -27,7 +27,7 @@ test("it_returns_422_with_errors_if_name_is_missing", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->post(route("api-stat-avg"));
+                     ->post(route("api.stat.avg"));
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -46,7 +46,7 @@ test("it_returns_422_with_errors_if_name_is_invalid", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-avg"), $arrPayload);
+                     ->postJson(route("api.stat.avg"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -65,7 +65,7 @@ test("it_returns_422_with_errors_if_stat_is_invalid", function () {
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-avg"), $arrPayload);
+                     ->postJson(route("api.stat.avg"), $arrPayload);
 
     $response->assertStatus(422)
              ->assertJson($arrErrors);
@@ -86,7 +86,7 @@ test("it_returns_200_with_user_sum_of_all_stats_for_the_selected_character_if_na
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-avg"), [
+                     ->postJson(route("api.stat.avg"), [
                          "name" => $character->name
                      ]);
 
@@ -109,7 +109,7 @@ test("it_returns_200_with_user_selected_stat_for_the_selected_character_if_name_
 
     $response = $this::withHeaders(DEFAULTHEADERS)
                      ->actingAs($user)
-                     ->postJson(route("api-stat-avg"), [
+                     ->postJson(route("api.stat.avg"), [
                          "stat" => $stat,
                          "name" => $character->name
                      ]);
