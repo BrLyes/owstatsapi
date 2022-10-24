@@ -18,7 +18,7 @@ use App\Http\Controllers\GameController;
 Route::get('/chars', [GameController::class, 'getChars']);
 
 Route::middleware("auth:sanctum")->group(function(){
-    Route::post("/games", [GameController::class, "store"])->name("game.store");
+    Route::post("/games", [GameController::class, "store"])->name("api.game.store");
     Route::post('/stat-all', [GameController::class, 'statsForChar'])->name("api.stat.all");
     Route::post('/stat-ovt', [GameController::class, 'StatOverTime'])->name("api.stat.ovt");
     Route::post('/stat-avg', [GameController::class, 'StatAverage'])->name("api.stat.avg");

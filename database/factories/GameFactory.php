@@ -27,6 +27,8 @@ class GameFactory extends Factory
             "death" => fake()->numberBetween(0,20),
             "assist" => fake()->numberBetween(0, 20),
             "damage" => fake()->numberBetween(0, 10000),
+            "heal" => fake()->numberBetween(0, 10000),
+            "mitigate" => fake()->numberBetween(0, 10000),
             "accuracy" => fake()->randomFloat(2, 0.00, 100.00),
             "user_id" => User::inRandomORder()->first()->id,
             "character_id" => User::inRandomORder()->first()->id,

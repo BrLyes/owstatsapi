@@ -14,6 +14,8 @@ class Game extends Model
         "death",
         "assist",
         "damage",
+        "heal",
+        "mitigate",
         "accuracy",
         "character_id",
         "user_id",
@@ -26,11 +28,13 @@ class Game extends Model
      * @var array<int, string>
      */
     const STATS = [
-        'kill',
-        'death',
-        'assist',
-        'damage',
-        'accuracy',
+        "kill",
+        "death",
+        "assist",
+        "damage",
+        "heal",
+        "mitigate",
+        "accuracy",
     ];
 
     public function user(){

@@ -21,7 +21,7 @@ class GamesSeeder extends Seeder
                               "character_id" => Character::inRandomOrder()->first()->id,
                               "user_id"      => $user->id
                           ]
-            )->count(rand(5, 100))->create();
+            )->count(rand(15, 100))->create();
         }
     }
 }

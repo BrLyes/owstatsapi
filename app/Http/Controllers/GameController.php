@@ -9,7 +9,6 @@ use App\Http\Requests\StatCharRequest;
 use App\Http\Requests\StatSumRequest;
 use App\Models\Character;
 use App\Models\Game;
-use Carbon\Carbon;
 
 class GameController extends Controller
 {
@@ -66,14 +65,19 @@ class GameController extends Controller
     }
 
     public function store(GameStoreRequest $request) {
+        $character = Character::where("name", $request->input("name"))->first();
         return response()->json(Game::create(
-            array_merge(
-                [
-                    "user_id" => $request->user()->id,
-                    "match_date" => Carbon::now()
-                ],
-                $request->all()
-            )
+            [
+                "kill"         => $request->input("kill"),
+                "death"        => $request->input("death"),
+                "assist"       => $request->input("assist"),
+                "damage"       => $request->input("damage"),
+                "heal"         => $request->input("heal"),
+                "mitigate"     => $request->input("mitigate"),
+                "user_id"      => $request->user()->id,
+                "character_id" => $character->id,
+                "match_date"   => $request->input("match_date"),
+            ],
         ));
     }
 }

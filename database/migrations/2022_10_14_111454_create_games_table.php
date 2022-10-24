@@ -19,7 +19,9 @@ return new class extends Migration
             $table->integer("death")->nullable(false)->default(0);
             $table->integer("assist")->nullable(false)->default(0);
             $table->integer("damage")->nullable(false)->default(0);
-            $table->float("accuracy")->nullable(false)->default(0.00);
+            $table->integer("heal")->nullable(false)->default(0);
+            $table->integer("mitigate")->nullable(false)->default(0);
+            $table->float("accuracy")->nullable(true)->default(null);
             $table->foreignId("character_id")->constrained()->cascadeOnUpdate();
             $table->foreignId("user_id")->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamp('match_date')->nullable(false);
