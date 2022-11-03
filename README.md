@@ -23,12 +23,14 @@ The user(player) first needs to create an account and then sends data to the rou
 * Stat average: average of one or multiple stats (route("api.stat.avg"))
 * Stat for character: All stats for a specific character (route("api.stat.all"))
 
+##Current WIP item
+* Landing page for the API 
+
 ##Roadmap
 This is still very early dev and here is list of upcoming changes: 
 * Win/Lose/draw stat
-* Healing/mitigation stat
 * Critical accuracy stat
 * Stat for new character (Sojourn)
-* Specific stats support for character (example: Ashe => scored accuracy))
+* Specific stats support for character (example: Ashe => scoped accuracy))
 * Better readme
 * and much more...
