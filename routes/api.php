@@ -17,7 +17,13 @@ use App\Http\Controllers\GameController;
 //TODO: rename routes and replace - with .
 Route::get('/chars', [GameController::class, 'getChars']);
 
-Route::middleware("auth:sanctum")->group(function(){
+Route::middleware("auth:sanctum")->group(function () {
+    Route::get("/tracker", function () {
+        return Storage::disk("s3")->temporaryUrl(
+            "tracker.zip",
+            now()->addMinutes(5),
+        );
+    });
     Route::post("/games", [GameController::class, "store"])->name("api.game.store");
     Route::post('/stat-all', [GameController::class, 'statsForChar'])->name("api.stat.all");
     Route::post('/stat-ovt', [GameController::class, 'StatOverTime'])->name("api.stat.ovt");
