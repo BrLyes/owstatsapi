@@ -49,7 +49,7 @@ class CharactersSeeder extends Seeder
             "Brigitte",
             "Kiriko",
             "Lucio",
-            "Merci",
+            "Mercy",
             "Moira",
             "Zenyatta",
         ];
