@@ -14,14 +14,52 @@ class CharactersSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
-    {
-        //Characters
-        $ashe = Character::firstOrCreate(
-            [
-                "name" => "Ashe",
-            ]
-        );
+    public function run() {
+        $arrOwCharacters = [
+            "D.va",
+            "Doomfist",
+            "Junker Queen",
+            "Orisa",
+            "Ramattra",
+            "Reinhardt",
+            "Roadhog",
+            "Sigma",
+            "Winston",
+            "Wrecking Ball",
+            "Zarya",
+            "Ashe",
+            "Bastion",
+            "Cassidy",
+            "Echo",
+            "Genji",
+            "Hanzo",
+            "Junkrat",
+            "Mei",
+            "Pharah",
+            "Reaper",
+            "Soldier:76",
+            "Sojourn",
+            "Sombra",
+            "Symmetra",
+            "Torbjorn",
+            "Tracer",
+            "Widowmaker",
+            "Ana",
+            "Baptiste",
+            "Brigitte",
+            "Kiriko",
+            "Lucio",
+            "Merci",
+            "Moira",
+            "Zenyatta",
+        ];
 
+        foreach ($arrOwCharacters as $character) {
+            Character::firstOrCreate(
+                [
+                    "name" => $character
+                ]
+            );
+        }
     }
 }
