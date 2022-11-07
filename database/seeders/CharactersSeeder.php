@@ -37,7 +37,7 @@ class CharactersSeeder extends Seeder
             "Mei",
             "Pharah",
             "Reaper",
-            "Soldier:76",
+            "Soldier76",
             "Sojourn",
             "Sombra",
             "Symmetra",
@@ -57,7 +57,7 @@ class CharactersSeeder extends Seeder
         foreach ($arrOwCharacters as $character) {
             Character::firstOrCreate(
                 [
-                    "name" => $character
+                    "name" => strtoupper($character)
                 ]
             );
         }
