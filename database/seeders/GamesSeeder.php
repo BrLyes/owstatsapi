@@ -17,11 +17,13 @@ class GamesSeeder extends Seeder
      */
     public function run() {
         foreach (User::all() as $user) {
-            Game::factory([
-                              "character_id" => Character::inRandomOrder()->first()->id,
-                              "user_id"      => $user->id
-                          ]
-            )->count(rand(15, 100))->create();
+            foreach (Character::all() as $character){
+                Game::factory([
+                                  "character_id" => $character->id,
+                                  "user_id"      => $user->id
+                              ]
+                )->count(rand(15, 100))->create();
+            }
         }
     }
 }

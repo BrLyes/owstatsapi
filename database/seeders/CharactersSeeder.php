@@ -20,7 +20,6 @@ class CharactersSeeder extends Seeder
             "Doomfist",
             "Junker Queen",
             "Orisa",
-            "Ramattra",
             "Reinhardt",
             "Roadhog",
             "Sigma",
