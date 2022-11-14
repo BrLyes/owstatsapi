@@ -38,7 +38,11 @@ class Game extends Model
     ];
 
     public function user(){
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function character(){
+        return $this->belongsTo(Character::class);
     }
 
     public function scopeOfUser($query, $user_id){

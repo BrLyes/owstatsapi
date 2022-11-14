@@ -9,6 +9,7 @@ use App\Http\Requests\StatCharRequest;
 use App\Http\Requests\StatSumRequest;
 use App\Models\Character;
 use App\Models\Game;
+use Illuminate\Support\Facades\DB;
 
 class GameController extends Controller
 {
@@ -62,6 +63,15 @@ class GameController extends Controller
             response()->json($response[$request->input("stat")])
             :
             response()->json($response);
+    }
+
+    public function GamesByChar(){
+        return response()->json(Game::select(DB::raw("character_id, count(*) as total"))
+                     ->ofUser(Auth()->user()->id)
+                     ->with("character")
+                     ->groupBy("character_id")
+                     ->orderBy("total", "desc")
+                     ->get());
     }
 
     public function store(GameStoreRequest $request) {

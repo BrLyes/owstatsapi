@@ -29,6 +29,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post('/stat-ovt', [GameController::class, 'StatOverTime'])->name("api.stat.ovt");
     Route::post('/stat-avg', [GameController::class, 'StatAverage'])->name("api.stat.avg");
     Route::post('/stat-sum', [GameController::class, 'StatSum'])->name("api.stat.sum");
+    Route::get('/games-by-char', [GameController::class, 'GamesByChar'])->name("api.games.by.char");
 });
 
 require __DIR__ . '/json-api-auth.php';

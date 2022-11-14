@@ -16,7 +16,7 @@ class CharactersSeeder extends Seeder
      */
     public function run() {
         $arrOwCharacters = [
-            "D.va",
+            "D.Va",
             "Doomfist",
             "Junker Queen",
             "Orisa",
@@ -56,7 +56,7 @@ class CharactersSeeder extends Seeder
         foreach ($arrOwCharacters as $character) {
             Character::firstOrCreate(
                 [
-                    "name" => strtoupper($character)
+                    "name" => $character
                 ]
             );
         }
