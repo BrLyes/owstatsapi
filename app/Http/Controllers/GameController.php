@@ -66,15 +66,6 @@ class GameController extends Controller
             response()->json($response);
     }
 
-    public function GamesByChar(){
-        return response()->json(Game::select(DB::raw("character_id, count(*) as total"))
-                     ->ofUser(Auth()->user()->id)
-                     ->with("character")
-                     ->groupBy("character_id")
-                     ->orderBy("total", "desc")
-                     ->get());
-    }
-
     public function store(GameStoreRequest $request) {
         $character = Character::where("name", $request->input("name"))->first();
         return response()->json(Game::create(
@@ -92,16 +83,38 @@ class GameController extends Controller
         ));
     }
 
-    public function lifetimeStats(RequiresCharacterNameRequest $request){
-        $games               = Game::with('character')
-                                   ->ofUser(Auth()->user()->id)
-                                   ->ofCharacterName($request->input("name"))
-                                   ->get();
+    public function GamesByChar() {
+        return response()->json(Game::select(DB::raw("character_id, count(*) as total"))
+                                    ->ofUser(Auth()->user()->id)
+                                    ->with("character")
+                                    ->groupBy("character_id")
+                                    ->orderBy("total", "desc")
+                                    ->get());
+    }
+
+    public function lifetimeStats(RequiresCharacterNameRequest $request) {
+        $games = Game::with('character')
+                     ->ofUser(Auth()->user()->id)
+                     ->ofCharacterName($request->input("name"))
+                     ->get();
 
         foreach (Game::STATS as $stat) {
             $arrResponse[$stat] = $games->pluck($stat)->sum();
         }
         $arrResponse["games"]     = $games->count();
+        $arrResponse["character"] = $games->first()->character;
+
+        return response()->json($arrResponse);
+    }
+
+    public function gameHistory(RequiresCharacterNameRequest $request) {
+        $games = Game::ofCharacterName($request->input("name"))
+                     ->ofUser($request->user()->id)
+                     ->orderBy("match_date")
+                     ->get();
+
+        $arrResponse["games"]     = $games;
+        $arrResponse["total"]     = $games->count();
         $arrResponse["character"] = $games->first()->character;
 
         return response()->json($arrResponse);
