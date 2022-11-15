@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GameStoreRequest;
+use App\Http\Requests\RequiresCharacterNameRequest;
 use App\Http\Requests\StatAverageRequest;
 use App\Http\Requests\StatOvertimeRequest;
 use App\Http\Requests\StatCharRequest;
@@ -89,5 +90,20 @@ class GameController extends Controller
                 "match_date"   => $request->input("match_date"),
             ],
         ));
+    }
+
+    public function lifetimeStats(RequiresCharacterNameRequest $request){
+        $games               = Game::with('character')
+                                   ->ofUser(Auth()->user()->id)
+                                   ->ofCharacterName($request->input("name"))
+                                   ->get();
+
+        foreach (Game::STATS as $stat) {
+            $arrResponse[$stat] = $games->pluck($stat)->sum();
+        }
+        $arrResponse["games"]     = $games->count();
+        $arrResponse["character"] = $games->first()->character;
+
+        return response()->json($arrResponse);
     }
 }
