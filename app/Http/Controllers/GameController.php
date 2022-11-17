@@ -92,21 +92,6 @@ class GameController extends Controller
                                     ->get());
     }
 
-    public function lifetimeStats(RequiresCharacterNameRequest $request) {
-        $games = Game::with('character')
-                     ->ofUser(Auth()->user()->id)
-                     ->ofCharacterName($request->input("name"))
-                     ->get();
-
-        foreach (Game::STATS as $stat) {
-            $arrResponse[$stat] = $games->pluck($stat)->sum();
-        }
-        $arrResponse["games"]     = $games->count();
-        $arrResponse["character"] = $games->first()->character;
-
-        return response()->json($arrResponse);
-    }
-
     public function gameHistory(RequiresCharacterNameRequest $request) {
         //Game history
         $games = Game::ofCharacterName($request->input("name"))
