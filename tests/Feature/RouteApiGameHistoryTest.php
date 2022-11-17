@@ -55,6 +55,11 @@ class RouteApiGameHistoryTest extends TestCase
                      ->orderBy("match_date")
                      ->get();
 
+        foreach (Game::STATS as $stat) {
+            $assert["sum"][$stat] = number_format($games->pluck($stat)->sum(), 2);
+            $assert["average"][$stat] = number_format($games->pluck($stat)->average(), 2);
+        }
+
         $assert["games"]     = $games->toArray();
         $assert["total"]     = $games->count();
         $assert["character"] = $character->toArray();

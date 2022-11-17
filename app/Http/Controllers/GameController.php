@@ -108,10 +108,17 @@ class GameController extends Controller
     }
 
     public function gameHistory(RequiresCharacterNameRequest $request) {
+        //Game history
         $games = Game::ofCharacterName($request->input("name"))
                      ->ofUser($request->user()->id)
                      ->orderBy("match_date")
                      ->get();
+
+        //Games averages and sums
+        foreach (Game::STATS as $stat) {
+            $arrResponse["sum"][$stat] = number_format($games->pluck($stat)->sum(), 2);
+            $arrResponse["average"][$stat] = number_format($games->pluck($stat)->average(), 2);
+        }
 
         $arrResponse["games"]     = $games;
         $arrResponse["total"]     = $games->count();
