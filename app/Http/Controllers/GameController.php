@@ -101,8 +101,8 @@ class GameController extends Controller
 
         //Games averages and sums
         foreach (Game::STATS as $stat) {
-            $arrResponse["sum"][$stat] = number_format($games->pluck($stat)->sum(), 2);
-            $arrResponse["average"][$stat] = number_format($games->pluck($stat)->average(), 2);
+            $arrResponse["sum"][$stat] = $games->pluck($stat)->sum();
+            $arrResponse["average"][$stat] = $games->pluck($stat)->average();
         }
 
         $arrResponse["games"]     = $games;
